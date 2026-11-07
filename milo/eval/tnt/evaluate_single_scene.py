@@ -35,4 +35,4 @@ if __name__ == "__main__":
     ply_file = args.input_mesh
     result_mesh_file = os.path.join(out_dir, "culled_mesh.ply")
     # read scene.json
-    f"python run.py --dataset-dir {ply_file} --traj-path {TNT_Dataset}/{scene}/{scene}_COLMAP_SfM.log --ply-path {TNT_Dataset}/{scene}/{scene}_COLMAP.ply"
+    f"{sys.executable} -m milo.eval.tnt.run --dataset-dir {ply_file} --traj-path {TNT_Dataset}/{scene}/{scene}_COLMAP_SfM.log --ply-path {TNT_Dataset}/{scene}/{scene}_COLMAP.ply"

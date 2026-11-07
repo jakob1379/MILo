@@ -1,8 +1,8 @@
 import math
 import torch
 from typing import List
-from utils.general_utils import build_rotation
-from scene.cameras import Camera
+from milo.utils.general_utils import build_rotation
+from milo.scene.cameras import Camera
 from tqdm import tqdm
 
 

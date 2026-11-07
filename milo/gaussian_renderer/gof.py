@@ -12,9 +12,9 @@
 import torch
 import math
 from diff_gaussian_rasterization_gof import GaussianRasterizationSettings, GaussianRasterizer
-from scene.gaussian_model import GaussianModel
-from utils.sh_utils import eval_sh
-from utils.geometry_utils import transform_points_world_to_view
+from milo.scene.gaussian_model import GaussianModel
+from milo.utils.sh_utils import eval_sh
+from milo.utils.geometry_utils import transform_points_world_to_view
 
 # Following functions are adopted from RaDe-GS: https://github.com/BaowenZ/RaDe-GS/blob/main/gaussian_renderer/__init__.py
 

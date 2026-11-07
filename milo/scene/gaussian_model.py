@@ -12,17 +12,17 @@
 import torch
 import math
 import numpy as np
-from utils.general_utils import inverse_sigmoid, get_expon_lr_func, build_rotation
+from milo.utils.general_utils import inverse_sigmoid, get_expon_lr_func, build_rotation
 from torch import nn
 import os
-from utils.system_utils import mkdir_p
+from milo.utils.system_utils import mkdir_p
 from plyfile import PlyData, PlyElement
-from utils.sh_utils import RGB2SH
+from milo.utils.sh_utils import RGB2SH
 from simple_knn._C import distCUDA2
-from utils.graphics_utils import BasicPointCloud
-from utils.general_utils import strip_symmetric, build_scaling_rotation
-from scene.appearance_network import AppearanceNetwork
-from utils.sh_utils import SH2RGB
+from milo.utils.graphics_utils import BasicPointCloud
+from milo.utils.general_utils import strip_symmetric, build_scaling_rotation
+from milo.scene.appearance_network import AppearanceNetwork
+from milo.utils.sh_utils import SH2RGB
 import trimesh
 
 try:
@@ -409,14 +409,14 @@ class GaussianModel:
         
     def _get_tetra_points(
         self, 
-        downsample_ratio:float=None, 
+        downsample_ratio:float | None=None, 
         return_sdf_values:bool=False, 
-        xyz_idx:torch.Tensor=None, 
+        xyz_idx:torch.Tensor | None=None, 
         verbose:bool=False,
         scale_points_with_downsample_ratio:bool=True,
-        scale_points_factor:float=None,
-        opacity_threshold:float=None,
-        override_opacity:torch.Tensor=None,
+        scale_points_factor:float | None=None,
+        opacity_threshold:float | None=None,
+        override_opacity:torch.Tensor | None=None,
     ):
         """
         Get the tetra points of the Gaussian model.

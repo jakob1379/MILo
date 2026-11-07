@@ -4,26 +4,21 @@ import gc
 import yaml
 from functools import partial
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, '..'))
-SUBMODULES_DIR = os.path.join(ROOT_DIR, 'submodules')
-sys.path.append(ROOT_DIR)
-sys.path.append(SUBMODULES_DIR)
-sys.path.append(os.path.join(SUBMODULES_DIR, 'Depth-Anything-V2'))
 
 import torch
 from random import randint
-from utils.loss_utils import l1_loss, L1_loss_appearance
+from milo.utils.loss_utils import l1_loss, L1_loss_appearance
 from fused_ssim import fused_ssim
 
-from gaussian_renderer import network_gui
-from gaussian_renderer import render_imp, render_simp, render_depth, render_full
+from milo.gaussian_renderer import network_gui
+from milo.gaussian_renderer import render_imp, render_simp, render_depth, render_full
 import sys
-from scene import Scene, GaussianModel
-from utils.general_utils import safe_state
+from milo.scene import Scene, GaussianModel
+from milo.utils.general_utils import safe_state
 import uuid
 from tqdm import tqdm
 from argparse import ArgumentParser, Namespace
-from arguments import ModelParams, PipelineParams, OptimizationParams
+from milo.arguments import ModelParams, PipelineParams, OptimizationParams
 try:
     import wandb
     WANDB_FOUND = True
@@ -33,13 +28,13 @@ except ImportError:
 import numpy as np
 import time
 
-from utils.geometry_utils import depth_to_normal
-from utils.log_utils import log_training_progress
-from regularization.regularizer.depth_order import (
+from milo.utils.geometry_utils import depth_to_normal
+from milo.utils.log_utils import log_training_progress
+from milo.regularization.regularizer.depth_order import (
     initialize_depth_order_supervision,
     compute_depth_order_regularization,
 )
-from regularization.regularizer.mesh import (
+from milo.regularization.regularizer.mesh import (
     initialize_mesh_regularization,
     compute_mesh_regularization,
     reset_mesh_state_at_next_iteration,
@@ -73,7 +68,7 @@ def training(
     if args.dense_gaussians:
         print("[INFO] Using dense Gaussians.")
     if checkpoint:
-        (model_params, first_iter) = torch.load(checkpoint)
+        (model_params, first_iter) = torch.load(checkpoint, weights_only=False)
         gaussians.restore(model_params, opt)
         if args.mesh_regularization:
             if first_iter > mesh_config["start_iter"]:
@@ -412,7 +407,8 @@ def prepare_output_and_logger(dataset, args):
     return run
 
 
-if __name__ == "__main__":
+def main():
+    global render, integrate
     # Set up command line argument parser
     parser = ArgumentParser(description="Training script parameters")
     lp = ModelParams(parser)
@@ -513,11 +509,11 @@ if __name__ == "__main__":
     # Import rendering function
     print(f"[INFO] Using {args.rasterizer} as rasterizer.")
     if args.rasterizer == "radegs":
-        from gaussian_renderer.radegs import render_radegs as render
-        from gaussian_renderer.radegs import integrate_radegs as integrate
+        from milo.gaussian_renderer.radegs import render_radegs as render
+        from milo.gaussian_renderer.radegs import integrate_radegs as integrate
     elif args.rasterizer == "gof":
-        from gaussian_renderer.gof import render_gof as render
-        from gaussian_renderer.gof import integrate_gof as integrate
+        from milo.gaussian_renderer.gof import render_gof as render
+        from milo.gaussian_renderer.gof import integrate_gof as integrate
         
     # Initialize system state (RNG)
     safe_state(args.quiet)
@@ -548,3 +544,7 @@ if __name__ == "__main__":
 
     # All done
     print("\nTraining complete.")
+
+
+if __name__ == "__main__":
+    main()

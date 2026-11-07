@@ -64,7 +64,7 @@ This codebase also builds on various other repositories such as [Nvdiffrast](htt
 
 Please start by creating or downloading a COLMAP dataset, such as <a href="https://drive.google.com/drive/folders/1Bf7DM2DFtQe4J63bEFLceEycNf4qTcqm?usp=sharing">our COLMAP run for the Ignatius scene from the Tanks&Temples dataset</a>. You can move the Ignatius directory to `./milo/data`.
 
-After installing MILo as described in the next section, you can reconstruct a surface mesh from images by going to the `./milo/` directory and running the following commands:
+After installing MILo as described in the next section, you can reconstruct a surface mesh from images by going to the `./milo/` directory and running the following commands (inside the uv environment: prefix with `uv run`, or activate `.venv`):
 
 ```bash
 # Training for an outdoor scene
@@ -105,70 +105,17 @@ git clone https://github.com/Anttwo/MILo.git --recursive
 
 ### Install dependencies.
 
-Please start by creating an environment:
+MILo is a [uv](https://docs.astral.sh/uv/) project: Linux x86_64, Python 3.14, PyTorch 2.15 with CUDA 13.4. You need an NVIDIA driver that supports CUDA 13.4 and a Turing-or-newer GPU (sm_75+).
+
+Install the CUDA 13.4 toolkit (`nvcc`, with `CUDA_HOME` set), a host compiler it supports, `cmake`, `ninja`, CGAL and GMP development headers, and X11/OpenGL libraries.
+
+Then install everything (PyTorch, the Gaussian Splatting rasterizers, simple-knn, fused-ssim, nvdiffrast) and build the triangulation extension:
 ```bash
-conda create -n milo python=3.9
-conda activate milo
+export TORCH_CUDA_ARCH_LIST="8.6"   # your GPU's compute capability; listing fewer archs builds much faster
+uv sync --all-extras                # or plain `uv sync`; extras: eval, blender
+cd submodules/tetra_triangulation && uv run cmake . && uv run make && cd ../..
 ```
-
-Then, specify your own CUDA paths depending on your CUDA version:
-```bash
-# You can specify your own cuda path (depending on your CUDA version)
-export CPATH=/usr/local/cuda-11.8/targets/x86_64-linux/include:$CPATH
-export LD_LIBRARY_PATH=/usr/local/cuda-11.8/targets/x86_64-linux/lib:$LD_LIBRARY_PATH
-export PATH=/usr/local/cuda-11.8/bin:$PATH
-```
-
-Finally, you can run the following script to install all dependencies, including PyTorch and Gaussian Splatting submodules:
-```bash
-python install.py
-```
-By default, the environment will be installed for CUDA 11.8. If using CUDA 12.1, you can provide the argument `--cuda_version 12.1` to `install.py`. **Please note that only CUDA 11.8 has been tested.**
-
-If you encounter problems or if the installation script does not work, please follow the detailed installation steps below.
-
-<details>
-<summary>Click here for detailed installation instructions</summary>
-
-```bash
-# For CUDA 11.8
-conda install pytorch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 pytorch-cuda=11.8 mkl=2023.1.0 -c pytorch -c nvidia
-
-# For CUDA 12.1 (The code has only been tested on CUDA 11.8)
-conda install pytorch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 pytorch-cuda=12.1 mkl=2023.1.0 -c pytorch -c nvidia
-
-pip install -r requirements.txt
-
-# Install submodules for Gaussian Splatting, including different rasterizers, aggressive densification, simplification, and utilities
-pip install submodules/diff-gaussian-rasterization_ms
-pip install submodules/diff-gaussian-rasterization
-pip install submodules/diff-gaussian-rasterization_gof
-pip install submodules/simple-knn
-pip install submodules/fused-ssim
-
-# Delaunay Triangulation from Tetra-Nerf
-cd submodules/tetra_triangulation
-conda install cmake
-conda install conda-forge::gmp
-conda install conda-forge::cgal
-
-# You can specify your own cuda path (depending on your CUDA version)
-export CPATH=/usr/local/cuda-11.8/targets/x86_64-linux/include:$CPATH
-export LD_LIBRARY_PATH=/usr/local/cuda-11.8/targets/x86_64-linux/lib:$LD_LIBRARY_PATH
-export PATH=/usr/local/cuda-11.8/bin:$PATH
-
-cmake .
-make 
-pip install -e .
-cd ../../
-
-# Nvdiffrast for efficient mesh rasterization
-cd ./submodules/nvdiffrast
-pip install .
-cd ../../
-```
-
-</details>
+CUDA extensions compile from source during `uv sync`. On machines with little RAM, limit parallelism with `MAX_JOBS=4 UV_CONCURRENT_BUILDS=2`. After changing `TORCH_CUDA_ARCH_LIST`, rebuild with `uv sync --reinstall`.
 
 </details>
 
@@ -181,6 +128,8 @@ First, go to the MILo folder:
 ```bash
 cd milo
 ```
+
+The commands below run inside the uv environment (`uv run python train.py ...` or activate `.venv`). The main scripts are also installed as commands that work from any directory: `milo-train`, `milo-train-regular-densification`, `milo-mesh-sdf`, `milo-mesh-integration`, `milo-mesh-regular-tsdf`, `milo-render`, `milo-metrics`, `milo-convert`, `milo-render-blender`, `milo-eval-tnt`, `milo-eval-dtu`. Other scripts run as modules, e.g. `python -m milo.eval.tnt.run`.
 
 Then, to optimize a Gaussian Splatting representation with MILo using a COLMAP dataset, you can run the following command:
 ```bash
@@ -526,10 +475,9 @@ Similarly to previous works <a href="https://anttwo.github.io/sugar/">SuGaR</a> 
 
 ### 6.1. Installing the addon
 
-1. Please start by installing `torch_geometric` and `torch_cluster` in your `milo` conda environment:
+1. Please start by installing the `blender` extra (`torch_geometric` and `torch_cluster`):
 ```shell
-pip install torch_geometric
-pip install torch_cluster
+uv sync --extra blender
 ```
 
 2. Then, install <a href="https://www.blender.org/download/">Blender</a> (version 4.0.2 is recommended but not mandatory).

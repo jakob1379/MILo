@@ -3,17 +3,17 @@ import torch
 import os
 import argparse
 from PIL import Image
-from blender.loading import (
+from milo.blender.loading import (
     load_blender_package,
     load_scene_state_from_blender_package,
 )
-from blender.editing import (
+from milo.blender.editing import (
     get_edited_gaussians_from_scene_state,
     EditedScenePipelineParams,
 )
 
 
-if __name__ == "__main__":
+def main():
     print_every_n_frames = 5
     
     # ----- Parser -----
@@ -95,9 +95,9 @@ if __name__ == "__main__":
     
     # ----- Render -----
     if args.rasterizer == 'radegs':
-        from gaussian_renderer import render_radegs as render
+        from milo.gaussian_renderer import render_radegs as render
     elif args.rasterizer == 'gof':
-        from gaussian_renderer import render_gof as render
+        from milo.gaussian_renderer import render_gof as render
     else:
         raise NotImplementedError(f"Rasterizer {args.rasterizer} not implemented.")
     
@@ -146,3 +146,7 @@ if __name__ == "__main__":
             print(f"Exported PLY file of frame {args.export_frame_as_ply+1} to {args.ply_save_path}")
 
     print("Rendering completed.")
+
+
+if __name__ == "__main__":
+    main()

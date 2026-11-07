@@ -8,9 +8,9 @@ from typing import List, Union, Tuple
 import numpy as np
 import torch
 import trimesh
-from scene.cameras import Camera
-from utils.general_utils import build_rotation
-from functional.func_utils import _init_cdf_mask, _render_simp
+from milo.scene.cameras import Camera
+from milo.utils.general_utils import build_rotation
+from milo.functional.func_utils import _init_cdf_mask, _render_simp
 
 
 @torch.no_grad()
@@ -181,7 +181,7 @@ def extract_gaussian_pivots(
     rotations:torch.Tensor,
     gaussian_idx:Union[torch.Tensor, None]=None,
     scale_pivots_with_downsample_ratio:bool=True,
-    scale_pivots_factor:float=None,
+    scale_pivots_factor:float | None=None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     """Extract pivots from Gaussians, in a differentiable manner.
     Each Gaussian will spawn 9 pivots.

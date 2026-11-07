@@ -3,29 +3,29 @@ from functools import partial
 import gc
 import numpy as np
 import torch
-from arguments import PipelineParams
-from scene import Scene
-from scene.cameras import Camera
-from gaussian_renderer import render_simp
-from scene.mesh import Meshes, MeshRasterizer, MeshRenderer, ScalableMeshRenderer
-from scene.gaussian_model import GaussianModel
-from utils.tetmesh import marching_tetrahedra
-from utils.camera_utils import get_cameras_spatial_extent
-from utils.geometry_utils import is_in_view_frustum
-from utils.geometry_utils import depth_to_normal as depth_double_to_normal
-from regularization.sdf.integration import (
+from milo.arguments import PipelineParams
+from milo.scene import Scene
+from milo.scene.cameras import Camera
+from milo.gaussian_renderer import render_simp
+from milo.scene.mesh import Meshes, MeshRasterizer, MeshRenderer, ScalableMeshRenderer
+from milo.scene.gaussian_model import GaussianModel
+from milo.utils.tetmesh import marching_tetrahedra
+from milo.utils.camera_utils import get_cameras_spatial_extent
+from milo.utils.geometry_utils import is_in_view_frustum
+from milo.utils.geometry_utils import depth_to_normal as depth_double_to_normal
+from milo.regularization.sdf.integration import (
     evaluate_cull_sdf_values,
 )
-from regularization.sdf.depth_fusion import (
+from milo.regularization.sdf.depth_fusion import (
     evaluate_mesh_occupancy,
 )
-from regularization.sdf.depth_fusion import evaluate_sdf_values as evaluate_sdf_values_depth_fusion
-from regularization.sdf.learnable import (
+from milo.regularization.sdf.depth_fusion import evaluate_sdf_values as evaluate_sdf_values_depth_fusion
+from milo.regularization.sdf.learnable import (
     compute_initial_sdf_with_binary_search,
     convert_sdf_to_occupancy,
     convert_occupancy_to_sdf,
 )
-from utils.geometry_utils import (
+from milo.utils.geometry_utils import (
     unflatten_voronoi_features,
     flatten_voronoi_features,
 )
@@ -97,7 +97,7 @@ def compute_mesh_regularization(
     render_func: Callable,
     weight_adjustment: float=0.005,
     args: Any=None,
-    integrate_func:Callable=None,
+    integrate_func:Callable | None=None,
 ) -> Dict[str, Any]:
     """
     Computes the mesh regularization loss and updates the mesh state.

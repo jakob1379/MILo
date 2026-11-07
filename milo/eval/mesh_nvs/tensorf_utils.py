@@ -1,3 +1,4 @@
+import math
 import torch
 import torch.nn as nn
 import numpy as np
@@ -145,7 +146,7 @@ def get_ml_array(deg_view):
 
 def generalized_binomial_coeff(a, k):
   """Compute generalized binomial coefficients."""
-  return np.prod(a - np.arange(k)) / np.math.factorial(k)
+  return np.prod(a - np.arange(k)) / math.factorial(k)
 
 
 
@@ -163,16 +164,16 @@ def assoc_legendre_coeff(l, m, k):
   Returns:
     A float, the coefficient of the term corresponding to the inputs.
   """
-  return ((-1)**m * 2**l * np.math.factorial(l) / np.math.factorial(k) /
-          np.math.factorial(l - k - m) *
+  return ((-1)**m * 2**l * math.factorial(l) / math.factorial(k) /
+          math.factorial(l - k - m) *
           generalized_binomial_coeff(0.5 * (l + k + m - 1.0), l))
 
 
 def sph_harm_coeff(l, m, k):
   """Compute spherical harmonic coefficients."""
   return (np.sqrt(
-      (2.0 * l + 1.0) * np.math.factorial(l - m) /
-      (4.0 * np.pi * np.math.factorial(l + m))) * assoc_legendre_coeff(l, m, k))
+      (2.0 * l + 1.0) * math.factorial(l - m) /
+      (4.0 * np.pi * math.factorial(l + m))) * assoc_legendre_coeff(l, m, k))
 
     
 def generate_ide_fn(deg_view):

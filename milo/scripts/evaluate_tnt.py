@@ -1,8 +1,6 @@
 import os
 import sys
 import argparse
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
 
 
 scenes_dict = {
@@ -41,7 +39,7 @@ scenes_dict = {
     },
 }
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     # Data paths
     parser.add_argument("--data_dir", type=str, default="")
@@ -84,7 +82,7 @@ if __name__ == "__main__":
         
         # Training command
         train_command = " ".join([
-            f"CUDA_VISIBLE_DEVICES={args.gpu_device} python train.py",
+            f"CUDA_VISIBLE_DEVICES={args.gpu_device} {sys.executable} -m milo.train",
             f"-s {os.path.join(args.data_dir, scene_name)}",
             f"-m {os.path.join(args.output_dir, output_name)}",
             f"--imp_metric {scene_params['imp_metric']}",
@@ -105,7 +103,7 @@ if __name__ == "__main__":
         
         # Mesh extraction command
         mesh_command = " ".join([
-            f"CUDA_VISIBLE_DEVICES={args.gpu_device} python mesh_extract_sdf.py",
+            f"CUDA_VISIBLE_DEVICES={args.gpu_device} {sys.executable} -m milo.mesh_extract_sdf",
             f"-s {os.path.join(args.data_dir, scene_name)}",
             f"-m {os.path.join(args.output_dir, output_name)}",
             f"--rasterizer {args.rasterizer}",
@@ -116,7 +114,7 @@ if __name__ == "__main__":
         
         # Evaluation command
         eval_command = " ".join([
-            f"python eval/tnt/run.py",
+            f"{sys.executable} -m milo.eval.tnt.run",
             "--dataset-dir", os.path.join(
                 args.gt_dir, scene_name
             ),
@@ -136,3 +134,7 @@ if __name__ == "__main__":
             os.system(mesh_command)
             print("\n[INFO] Running evaluation command :", eval_command, sep="\n")
             os.system(eval_command)
+
+
+if __name__ == "__main__":
+    main()

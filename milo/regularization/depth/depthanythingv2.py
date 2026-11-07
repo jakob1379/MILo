@@ -3,7 +3,7 @@ import sys
 import torch
 import numpy as np
 
-sys.path.append('./Depth-Anything-V2/')
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'submodules', 'Depth-Anything-V2')))
 from depth_anything_v2.dpt import DepthAnythingV2
 
 

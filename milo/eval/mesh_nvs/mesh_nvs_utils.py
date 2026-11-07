@@ -6,15 +6,15 @@ import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
 
-from tensorf_utils import positional_encoding, N_to_reso, SHRender, MLPRender_Fea, TVLoss, MLPRender_Fea_Diffuse, MLPRender_Fea_Specular
+from milo.eval.mesh_nvs.tensorf_utils import positional_encoding, N_to_reso, SHRender, MLPRender_Fea, TVLoss, MLPRender_Fea_Diffuse, MLPRender_Fea_Specular
 
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from scene.mesh import Meshes, MeshRenderer
-from utils.geometry_utils import transform_points_view_to_world, is_in_view_frustum
-from utils.sh_utils import eval_sh
+from milo.scene.mesh import Meshes, MeshRenderer
+from milo.utils.geometry_utils import transform_points_view_to_world, is_in_view_frustum
+from milo.utils.sh_utils import eval_sh
 from abc import abstractmethod
+from typing import Any
 import trimesh
 import math
 
@@ -290,7 +290,7 @@ class RenderWithColorField(torch.nn.Module):
         self.color_field = color_field
         self.optimizer = torch.optim.Adam(grad_vars, betas=(0.9,0.99))
 
-    def forward(self, viewpoint_idx : int, viewpoint_cam : any, mesh_renderer : MeshRenderer, training : bool = True, n_random_points : int = -1, min_number_of_faces : int = 50) -> torch.Tensor:
+    def forward(self, viewpoint_idx : int, viewpoint_cam : Any, mesh_renderer : MeshRenderer, training : bool = True, n_random_points : int = -1, min_number_of_faces : int = 50) -> torch.Tensor | None:
         # Filter out faces not in view frustum
         with torch.no_grad():
             faces_mask = is_in_view_frustum(self.mesh.verts, viewpoint_cam)[self.mesh.faces].any(axis=1)

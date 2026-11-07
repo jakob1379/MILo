@@ -1,0 +1,153 @@
+[project]
+name = "milo"
+version = "0.1.0"
+description = "MILo: Mesh-In-the-Loop Gaussian Splatting for Detailed and Efficient Surface Reconstruction"
+readme = "README.md"
+license = { file = "LICENSE.md" }
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.15.0",
+    "torchvision>=0.29.2",
+    "numpy>=2.5.4",
+    "open3d>=0.20.0",
+    "trimesh>=5.2.0",
+    "scikit-image>=0.26.0",
+    "opencv-python>=5.0.0.93",
+    "plyfile>=1.1.5",
+    "tqdm>=4.70.1",
+    "pillow>=13.0.0",
+    "pyyaml>=6.0.3",
+    "matplotlib>=3.11.2",
+    "scipy>=1.18.1",
+    "diff-gaussian-rasterization",
+    "diff-gaussian-rasterization-ms",
+    "diff-gaussian-rasterization-gof",
+    "simple-knn",
+    "fused-ssim",
+    "tetra-nerf",
+    "nvdiffrast",
+]
+
+[project.optional-dependencies]
+eval = [
+    "scikit-learn>=1.9.1",
+    "cycler>=0.12.1",
+    "pyrender>=0.1.45",
+]
+blender = [
+    "torch-geometric>=2.8.1",
+    "torch-cluster>=1.6.3",
+]
+
+[project.scripts]
+milo-train = "milo.train:main"
+milo-train-regular-densification = "milo.train_regular_densification:main"
+milo-mesh-sdf = "milo.mesh_extract_sdf:main"
+milo-mesh-integration = "milo.mesh_extract_integration:main"
+milo-mesh-regular-tsdf = "milo.mesh_extract_regular_tsdf:main"
+milo-render = "milo.render:main"
+milo-metrics = "milo.metrics:main"
+milo-convert = "milo.convert:main"
+milo-render-blender = "milo.render_blender_scene:main"
+milo-eval-tnt = "milo.scripts.evaluate_tnt:main"
+milo-eval-dtu = "milo.scripts.evaluate_dtu:main"
+
+[dependency-groups]
+dev = ["pytest>=9.2.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["milo"]
+
+[tool.ty.src]
+exclude = ["submodules"]
+
+[tool.ty.environment]
+extra-paths = ["submodules/tetra_triangulation"]
+
+[tool.ty.terminal]
+error-on-warning = false
+
+[tool.ty.analysis]
+allowed-unresolved-imports = [
+    "diff_gaussian_rasterization",
+    "diff_gaussian_rasterization_ms.**",
+    "diff_gaussian_rasterization_gof",
+    "diff_plane_rasterization",
+    "simple_knn.**",
+    "fused_ssim",
+    "nvdiffrast.**",
+    "torch_cluster",
+    "depth_anything_v2.**",
+    "bpy",
+    "bpy_extras.**",
+    "wandb",
+]
+
+[tool.ty.rules]
+invalid-mutable-override = "ignore"
+unresolved-attribute = "warn"
+invalid-argument-type = "warn"
+no-matching-overload = "warn"
+invalid-assignment = "warn"
+unsupported-operator = "warn"
+not-subscriptable = "warn"
+call-non-callable = "warn"
+invalid-return-type = "warn"
+unknown-argument = "warn"
+too-many-positional-arguments = "warn"
+invalid-method-override = "warn"
+
+[[tool.ty.overrides]]
+include = [
+    "milo/train.py",
+    "milo/train_regular_densification.py",
+    "milo/render.py",
+    "milo/mesh_extract_sdf.py",
+    "milo/mesh_extract_integration.py",
+]
+rules = { unresolved-global = "ignore" }
+
+[[tool.ty.overrides]]
+include = ["milo/blender/milo_addon.py"]
+rules = { invalid-type-form = "ignore" }
+
+[tool.uv]
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+override-dependencies = ["pyopengl>=3.1.10"]
+
+[tool.uv.workspace]
+members = ["submodules/tetra_triangulation"]
+
+[[tool.uv.index]]
+name = "pytorch-cu134"
+url = "https://download.pytorch.org/whl/cu134"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu134" }
+torchvision = { index = "pytorch-cu134" }
+diff-gaussian-rasterization = { path = "submodules/diff-gaussian-rasterization" }
+diff-gaussian-rasterization-ms = { path = "submodules/diff-gaussian-rasterization_ms" }
+diff-gaussian-rasterization-gof = { path = "submodules/diff-gaussian-rasterization_gof" }
+simple-knn = { path = "submodules/simple-knn" }
+fused-ssim = { path = "submodules/fused-ssim" }
+tetra-nerf = { workspace = true }
+nvdiffrast = { git = "https://github.com/NVlabs/nvdiffrast", tag = "v0.4.0" }
+
+[tool.uv.extra-build-dependencies]
+diff-gaussian-rasterization = [{ requirement = "torch", match-runtime = true }]
+diff-gaussian-rasterization-ms = [{ requirement = "torch", match-runtime = true }]
+diff-gaussian-rasterization-gof = [{ requirement = "torch", match-runtime = true }]
+simple-knn = [{ requirement = "torch", match-runtime = true }]
+fused-ssim = [{ requirement = "torch", match-runtime = true }]
+torch-cluster = [{ requirement = "torch", match-runtime = true }]
+nvdiffrast = [{ requirement = "torch", match-runtime = true }]
+
+[[tool.uv.dependency-metadata]]
+name = "torch-cluster"
+version = "1.6.3"
+requires-dist = ["scipy"]

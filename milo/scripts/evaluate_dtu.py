@@ -1,8 +1,6 @@
 import os
 import sys
 import argparse
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
 
 
 scene_names = [
@@ -26,7 +24,7 @@ scene_names = [
 imp_metric = "indoor"
 decoupled_appearance = True
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     # Data paths
     parser.add_argument("--data_dir", type=str, default="")
@@ -69,7 +67,7 @@ if __name__ == "__main__":
         
         # Training command
         train_command = " ".join([
-            f"CUDA_VISIBLE_DEVICES={args.gpu_device} python train_regular_densification.py",
+            f"CUDA_VISIBLE_DEVICES={args.gpu_device} {sys.executable} -m milo.train_regular_densification",
             f"-s {os.path.join(args.data_dir, scene_name)}",
             f"-m {os.path.join(args.output_dir, output_name)}",
             f"-r 2",
@@ -88,7 +86,7 @@ if __name__ == "__main__":
         
         # Mesh extraction command
         mesh_command = " ".join([
-            f"CUDA_VISIBLE_DEVICES={args.gpu_device} python ./eval/dtu/mesh_extract_dtu.py",
+            f"CUDA_VISIBLE_DEVICES={args.gpu_device} {sys.executable} -m milo.eval.dtu.mesh_extract_dtu",
             f"-s {os.path.join(args.data_dir, scene_name)}",
             f"-m {os.path.join(args.output_dir, output_name)}",
             f"-r 2",
@@ -98,7 +96,7 @@ if __name__ == "__main__":
         
         # Evaluation command
         eval_command = " ".join([
-            f"python ./eval/dtu/evaluate_dtu_mesh.py", 
+            f"{sys.executable} -m milo.eval.dtu.evaluate_dtu_mesh", 
             f"-s {os.path.join(args.data_dir, scene_name)}",
             f"-m {os.path.join(args.output_dir, output_name)}",
             f"-r 2",
@@ -113,3 +111,7 @@ if __name__ == "__main__":
         os.system(mesh_command)
         print("\n[INFO] Running evaluation command :", eval_command, sep="\n")
         os.system(eval_command)
+
+
+if __name__ == "__main__":
+    main()

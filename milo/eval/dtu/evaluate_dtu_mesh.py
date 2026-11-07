@@ -1,22 +1,16 @@
 # The evalution code is fork from GOF https://github.com/autonomousvision/gaussian-opacity-fields/blob/main/evaluate_dtu_mesh.py
 import os
 import sys
-BASE_DIR = os.path.dirname(  # milo/
-    os.path.dirname(  # milo/eval/
-        os.path.dirname(os.path.abspath(__file__))  # milo/eval/dtu/
-    )
-)
-sys.path.append(BASE_DIR)
 import numpy as np
 import torch
 import torch.nn.functional as F
-from scene import Scene
+from milo.scene import Scene
 import cv2
 import random
 from os import path
 from argparse import ArgumentParser
-from arguments import ModelParams, PipelineParams, get_combined_args
-from gaussian_renderer import GaussianModel
+from milo.arguments import ModelParams, PipelineParams, get_combined_args
+from milo.gaussian_renderer import GaussianModel
 import trimesh
 from skimage.morphology import binary_dilation, disk
 
@@ -195,7 +189,7 @@ def evaluate_mesh(dataset : ModelParams, iteration : int, DTU_PATH : str, ply_na
     # scan = dataset.model_path.split("/")[-1][4:]
     scan = int(dataset.source_path.split("/")[-1][4:])
     
-    cmd = f"python ./eval/dtu/eval.py --data {aligned_mesh_file} --scan {scan} --mode mesh --dataset_dir {DTU_PATH} --vis_out_dir {out_dir}"
+    cmd = f"{sys.executable} -m milo.eval.dtu.eval --data {aligned_mesh_file} --scan {scan} --mode mesh --dataset_dir {DTU_PATH} --vis_out_dir {out_dir}"
     print(cmd)
     os.system(cmd)
     

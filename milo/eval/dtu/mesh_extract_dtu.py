@@ -1,21 +1,15 @@
 import os
 import sys
-BASE_DIR = os.path.dirname(  # milo/
-    os.path.dirname(  # milo/eval/
-        os.path.dirname(os.path.abspath(__file__))  # milo/eval/dtu/
-    )
-)
-sys.path.append(BASE_DIR)
 import torch
-from scene import GaussianModel
+from milo.scene import GaussianModel
 from argparse import ArgumentParser
-from arguments import ModelParams, PipelineParams
+from milo.arguments import ModelParams, PipelineParams
 import math
 import numpy as np
 import open3d as o3d
 import open3d.core as o3c
-from scene.dataset_readers import sceneLoadTypeCallbacks
-from utils.camera_utils import cameraList_from_camInfos
+from milo.scene.dataset_readers import sceneLoadTypeCallbacks
+from milo.utils.camera_utils import cameraList_from_camInfos
 
 
 def load_camera(args):
@@ -122,9 +116,9 @@ if __name__ == "__main__":
     
     print(f"[INFO] Using {args.rasterizer} as rasterizer.")
     if args.rasterizer == "radegs":
-        from gaussian_renderer.radegs import render_radegs as render
+        from milo.gaussian_renderer.radegs import render_radegs as render
     elif args.rasterizer == "gof":
-        from gaussian_renderer.gof import render_gof as render
+        from milo.gaussian_renderer.gof import render_gof as render
     else:
         raise ValueError(f"Invalid rasterizer: {args.rasterizer}")
     

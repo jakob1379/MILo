@@ -1,7 +1,7 @@
 from typing import Union
 import torch
 from tetranerf.utils.extension import cpp as delaunay_cpp
-from functional.pivots import extract_gaussian_pivots
+from milo.functional.pivots import extract_gaussian_pivots
 
 
 @torch.no_grad()
@@ -11,7 +11,7 @@ def compute_delaunay_triangulation(
     rotations:Union[torch.Tensor, None]=None,
     gaussian_idx:Union[torch.Tensor, None]=None,
     scale_pivots_with_downsample_ratio:bool=True,
-    scale_pivots_factor:float=None,
+    scale_pivots_factor:float | None=None,
     override_pivots:Union[torch.Tensor, None]=None,
 ) -> torch.Tensor:
     """Compute Delaunay tetrahedralization for a set of Gaussian pivots.

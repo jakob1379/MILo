@@ -1,38 +1,38 @@
 import yaml
 import torch
 from functools import partial
-from scene import Scene
+from milo.scene import Scene
 import os
 from os import makedirs
 import random
 from tqdm import tqdm
 from argparse import ArgumentParser
-from arguments import ModelParams, PipelineParams, get_combined_args
-from gaussian_renderer import GaussianModel, render_simp
+from milo.arguments import ModelParams, PipelineParams, get_combined_args
+from milo.gaussian_renderer import GaussianModel, render_simp
 import numpy as np
 import trimesh
 from tetranerf.utils.extension import cpp
-from utils.tetmesh import marching_tetrahedra
-from utils.camera_utils import get_cameras_spatial_extent
+from milo.utils.tetmesh import marching_tetrahedra
+from milo.utils.camera_utils import get_cameras_spatial_extent
 
-from scene.mesh import MeshRasterizer, MeshRenderer, ScalableMeshRenderer, Meshes
+from milo.scene.mesh import MeshRasterizer, MeshRenderer, ScalableMeshRenderer, Meshes
 
-from regularization.sdf.integration import evaluate_cull_sdf_values as compute_sdf_with_integration
-from regularization.sdf.depth_fusion import evaluate_sdf_values as compute_sdf_with_depth_fusion
-from regularization.sdf.depth_fusion import evaluate_mesh_occupancy, evaluate_mesh_colors_all_vertices
-from regularization.sdf.learnable import compute_initial_sdf_with_binary_search
+from milo.regularization.sdf.integration import evaluate_cull_sdf_values as compute_sdf_with_integration
+from milo.regularization.sdf.depth_fusion import evaluate_sdf_values as compute_sdf_with_depth_fusion
+from milo.regularization.sdf.depth_fusion import evaluate_mesh_occupancy, evaluate_mesh_colors_all_vertices
+from milo.regularization.sdf.learnable import compute_initial_sdf_with_binary_search
 
 import gc
-from utils.geometry_utils import depth_to_normal as depth_double_to_normal
-from regularization.sdf.learnable import convert_occupancy_to_sdf, convert_sdf_to_occupancy
-from utils.geometry_utils import (
+from milo.utils.geometry_utils import depth_to_normal as depth_double_to_normal
+from milo.regularization.sdf.learnable import convert_occupancy_to_sdf, convert_sdf_to_occupancy
+from milo.utils.geometry_utils import (
     flatten_voronoi_features, 
     unflatten_voronoi_features, 
     is_in_view_frustum, 
     identify_out_of_field_points,
 )
 
-from scene.gaussian_model import SparseGaussianAdam
+from milo.scene.gaussian_model import SparseGaussianAdam
 
 from tetranerf.utils.extension import cpp
 import time
@@ -543,7 +543,8 @@ def extract_mesh_with_sdf_refinement(
         mesh.export(os.path.join(dataset.model_path,f"mesh_learnable_sdf.ply"))
 
 
-if __name__ == "__main__":
+def main():
+    global render, integrate
     # Set up command line argument parser
     parser = ArgumentParser(description="Testing script parameters")
     model = ModelParams(parser, sentinel=True)
@@ -589,11 +590,11 @@ if __name__ == "__main__":
     # Rasterization
     print(f"[INFO] Using {args.rasterizer} as rasterizer.")
     if args.rasterizer == "radegs":
-        from gaussian_renderer.radegs import render_radegs as render
-        from gaussian_renderer.radegs import integrate_radegs as integrate
+        from milo.gaussian_renderer.radegs import render_radegs as render
+        from milo.gaussian_renderer.radegs import integrate_radegs as integrate
     elif args.rasterizer == "gof":
-        from gaussian_renderer.gof import render_gof as render
-        from gaussian_renderer.gof import integrate_gof as integrate
+        from milo.gaussian_renderer.gof import render_gof as render
+        from milo.gaussian_renderer.gof import integrate_gof as integrate
     else:
         raise ValueError(f"Invalid rasterizer: {args.rasterizer}")
     
@@ -614,3 +615,7 @@ if __name__ == "__main__":
         mesh_config=mesh_config,
     )
     
+
+
+if __name__ == "__main__":
+    main()

@@ -1,8 +1,9 @@
+import os
 import torch
 import gc
 from tqdm import tqdm
 # from utils.graphics_utils import depth_double_to_normal
-from regularization.depth.depth_order import compute_depth_order_loss
+from milo.regularization.depth.depth_order import compute_depth_order_loss
 # from scene import Scene, GaussianModel
 # from scene.cameras import Camera
 
@@ -27,13 +28,13 @@ def initialize_depth_order_supervision(
     print("[INFO] Building depth priors from input RGB images...")
     viewpoint_stack = scene.getTrainCameras().copy()
     try:
-        from regularization.depth.depthanythingv2 import load_depthanything, apply_depthanything
+        from milo.regularization.depth.depthanythingv2 import load_depthanything, apply_depthanything
     except ImportError:
         print("[ERROR] DepthAnythingV2 not found. Please ensure it's installed.")
         raise
 
     dav2 = load_depthanything(
-        checkpoint_dir=config["depthanythingv2_checkpoint_dir"],
+        checkpoint_dir=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), config["depthanythingv2_checkpoint_dir"]),
         encoder=config["depthanythingv2_encoder"],
         device=device
     )

@@ -50,7 +50,7 @@ def compute_adjacency_from_tets_no_chunking(delaunay_tets: torch.Tensor, num_poi
     return point_adjacency, point_adjacency_offsets
 
 
-def compute_adjacency_from_tets(delaunay_tets: torch.Tensor, num_points: int, chunk_size: int = 5_000_000, index_dtype: torch.dtype = torch.long, device: torch.device = None) -> Tuple[torch.Tensor, torch.Tensor]:
+def compute_adjacency_from_tets(delaunay_tets: torch.Tensor, num_points: int, chunk_size: int = 5_000_000, index_dtype: torch.dtype = torch.long, device: torch.device | None = None) -> Tuple[torch.Tensor, torch.Tensor]:
     num_tets = delaunay_tets.size(0)
     # Calculate the number of chunks
     num_chunks = (num_tets + chunk_size - 1) // chunk_size

@@ -10,15 +10,15 @@
 #
 
 import torch
-from scene import Scene
+from milo.scene import Scene
 import os
 from tqdm import tqdm
 from os import makedirs
 import torchvision
-from utils.general_utils import safe_state
+from milo.utils.general_utils import safe_state
 from argparse import ArgumentParser
-from arguments import ModelParams, PipelineParams, get_combined_args
-from gaussian_renderer import GaussianModel
+from milo.arguments import ModelParams, PipelineParams, get_combined_args
+from milo.gaussian_renderer import GaussianModel
 
 def render_set(model_path, name, iteration, views, gaussians, pipeline, background):
     render_path = os.path.join(model_path, name, "ours_{}".format(iteration), "renders")
@@ -47,7 +47,8 @@ def render_sets(dataset : ModelParams, iteration : int, pipeline : PipelineParam
         if not skip_test:
              render_set(dataset.model_path, "test", scene.loaded_iter, scene.getTestCameras(), gaussians, pipeline, background)
 
-if __name__ == "__main__":
+def main():
+    global render
     # Set up command line argument parser
     parser = ArgumentParser(description="Testing script parameters")
     model = ModelParams(parser, sentinel=True)
@@ -62,9 +63,9 @@ if __name__ == "__main__":
     
     print(f"[INFO] Using {args.rasterizer} as rasterizer.")
     if args.rasterizer == "radegs":
-        from gaussian_renderer.radegs import render_radegs as render
+        from milo.gaussian_renderer.radegs import render_radegs as render
     elif args.rasterizer == "gof":
-        from gaussian_renderer.gof import render_gof as render
+        from milo.gaussian_renderer.gof import render_gof as render
     else:
         raise ValueError(f"Invalid rasterizer: {args.rasterizer}")
 
@@ -72,3 +73,7 @@ if __name__ == "__main__":
     safe_state(args.quiet)
 
     render_sets(model.extract(args), args.iteration, pipeline.extract(args), args.skip_train, args.skip_test)
+
+
+if __name__ == "__main__":
+    main()

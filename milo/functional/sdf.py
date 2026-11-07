@@ -3,10 +3,10 @@ from typing import (
 )
 from functools import partial
 import torch
-from scene.cameras import Camera
-from regularization.sdf.depth_fusion import AdaptiveTSDF
-from utils.camera_utils import get_cameras_spatial_extent
-from functional.pivots import extract_gaussian_pivots
+from milo.scene.cameras import Camera
+from milo.regularization.sdf.depth_fusion import AdaptiveTSDF
+from milo.utils.camera_utils import get_cameras_spatial_extent
+from milo.functional.pivots import extract_gaussian_pivots
 from tqdm import tqdm
 
 
@@ -89,7 +89,7 @@ def compute_initial_sdf_values(
     method:str="depth_fusion",
     gaussian_idx:Union[torch.Tensor, None]=None,
     scale_pivots_with_downsample_ratio:bool=True,
-    scale_pivots_factor:float=None,
+    scale_pivots_factor:float | None=None,
     override_pivots:Union[torch.Tensor, None]=None,
 ) -> torch.Tensor:
     """Compute initial SDF values for a set of Gaussians, or precomputed pivots.

@@ -1,14 +1,14 @@
 from typing import List, Tuple, Callable
 import numpy as np
 import torch
-from arguments import PipelineParams
-from scene.mesh import Meshes, MeshRenderer
-from scene.gaussian_model import GaussianModel
-from scene.cameras import Camera
-from utils.geometry_utils import is_in_view_frustum
-from utils.tetmesh import marching_tetrahedra
-from utils.geometry_utils import unflatten_voronoi_features
-from regularization.sdf.depth_fusion import evaluate_sdf_values
+from milo.arguments import PipelineParams
+from milo.scene.mesh import Meshes, MeshRenderer
+from milo.scene.gaussian_model import GaussianModel
+from milo.scene.cameras import Camera
+from milo.utils.geometry_utils import is_in_view_frustum
+from milo.utils.tetmesh import marching_tetrahedra
+from milo.utils.geometry_utils import unflatten_voronoi_features
+from milo.regularization.sdf.depth_fusion import evaluate_sdf_values
 import gc
 
 
@@ -116,7 +116,7 @@ def apply_iterative_linearization_to_sdf(
     end_points:torch.Tensor,
     end_idx:torch.Tensor,
     n_steps:int=500,
-    enforce_std:float=None,
+    enforce_std:float | None=None,
 ) -> torch.Tensor:
     """
     Starting from initial SDF values, progressively linearize the SDF values
@@ -168,7 +168,7 @@ def compute_initial_sdf_with_binary_search(
     sdf_function:Callable,
     n_binary_steps:int,
     n_linearization_steps:int,
-    enforce_std:float=None,
+    enforce_std:float | None=None,
 ) -> torch.Tensor:
     """
     Compute initial SDF values with binary search and linearization.

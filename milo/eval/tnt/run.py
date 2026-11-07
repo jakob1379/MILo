@@ -41,18 +41,18 @@ import os
 import argparse
 # import torch
 
-from config import scenes_tau_dict
-from registration import (
+from milo.eval.tnt.config import scenes_tau_dict
+from milo.eval.tnt.registration import (
     trajectory_alignment,
     registration_vol_ds,
     registration_unif,
     read_trajectory,
 )
 # from help_func import auto_orient_and_center_poses
-from trajectory_io import CameraPose
-from evaluation import EvaluateHisto
-from util import make_dir
-from plot import plot_graph
+from milo.eval.tnt.trajectory_io import CameraPose
+from milo.eval.tnt.evaluation import EvaluateHisto
+from milo.eval.tnt.util import make_dir
+from milo.eval.tnt.plot import plot_graph
 
 
 def run_evaluation(dataset_dir, traj_path, ply_path, out_dir, view_crop):
@@ -120,6 +120,8 @@ def run_evaluation(dataset_dir, traj_path, ply_path, out_dir, view_crop):
             traj_to_register.append(CameraPose(meta=None, mat=ld[i]))
     elif traj_path.endswith('.json'): # instant-npg or sdfstudio format
         import json
+        import torch
+        from milo.eval.tnt.help_func import auto_orient_and_center_poses
         with open(traj_path, encoding='UTF-8') as f:
             meta = json.load(f)
         poses_dict = {}

@@ -1,11 +1,11 @@
 from typing import List, Callable, Union
 import torch
-from scene.cameras import Camera
-from scene.gaussian_model import GaussianModel
-from scene.mesh import Meshes, MeshRasterizer, MeshRenderer, ScalableMeshRenderer
-from arguments import PipelineParams
-from utils.camera_utils import get_cameras_spatial_extent
-from utils.geometry_utils import is_in_view_frustum
+from milo.scene.cameras import Camera
+from milo.scene.gaussian_model import GaussianModel
+from milo.scene.mesh import Meshes, MeshRasterizer, MeshRenderer, ScalableMeshRenderer
+from milo.arguments import PipelineParams
+from milo.utils.camera_utils import get_cameras_spatial_extent
+from milo.utils.geometry_utils import is_in_view_frustum
 from tqdm import tqdm
 
 # TODO: Import the two following functions from utils.geometry_utils
@@ -219,8 +219,8 @@ class AdaptiveTSDF:
         self,
         points:torch.Tensor,
         trunc_margin:float,
-        znear:float=None,
-        zfar:float=None,
+        znear:float | None=None,
+        zfar:float | None=None,
         initial_sdf_value:float=-1.0,
         use_binary_opacity:bool=False,
     ):
@@ -267,7 +267,7 @@ class AdaptiveTSDF:
         depth:torch.Tensor,
         camera:Camera, 
         obs_weight=1.0,
-        override_points:torch.Tensor=None,
+        override_points:torch.Tensor | None=None,
         interpolate_depth:bool=True,
         interpolation_mode:str='bilinear',
         padding_mode:str='border',
@@ -407,7 +407,7 @@ def _evaluate_sdf_values(
     kernel_size:int, 
     render_func:Callable, 
     return_colors:bool=False,
-    trunc_margin:float=None, 
+    trunc_margin:float | None=None, 
     use_binary_opacity:bool=False,
 ):
     """Evaluate the TSDF values at the given points using Depth Fusion.
@@ -473,7 +473,7 @@ def evaluate_sdf_values(
     return_colors:bool=False,
     trunc_margin:Union[float, None]=None, 
     use_binary_opacity:bool=False,
-    render_func:Callable=None,
+    render_func:Callable | None=None,
 ):
     if render_func is None:
         raise ValueError("render_func must be provided.")
@@ -569,8 +569,8 @@ def evaluate_mesh_colors(
     mesh:Meshes,
     masks:torch.Tensor, 
     use_scalable_renderer:bool=False,
-    trunc_margin:float=None,
-    override_points:torch.Tensor=None,
+    trunc_margin:float | None=None,
+    override_points:torch.Tensor | None=None,
     return_hit_mask:bool=False,
 ) -> torch.Tensor:
     """Evaluate vertex colors using Depth Fusion.
@@ -641,7 +641,7 @@ def evaluate_mesh_colors_all_vertices(
     mesh:Meshes,
     masks:torch.Tensor, 
     use_scalable_renderer:bool=False,
-    trunc_margin:float=None,
+    trunc_margin:float | None=None,
 ) -> torch.Tensor:
     """Evaluate vertex colors for all vertices of the mesh, including the ones that are not visible.
     Useful for avoiding artifacts when rendering the mesh.

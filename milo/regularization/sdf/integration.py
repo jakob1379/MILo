@@ -1,15 +1,15 @@
 from typing import List, Tuple, Union, Callable
 import numpy as np
 import torch
-from scene.cameras import Camera
-from arguments import PipelineParams
-from scene.gaussian_model import GaussianModel
+from milo.scene.cameras import Camera
+from milo.arguments import PipelineParams
+from milo.scene.gaussian_model import GaussianModel
 from tqdm import tqdm
 import gc
 
 
 @torch.no_grad()
-def evaluate_sdf_values(points, views, gaussians, pipeline, background, kernel_size, isosurface_value=0.5, integrate_func:Callable=None):
+def evaluate_sdf_values(points, views, gaussians, pipeline, background, kernel_size, isosurface_value=0.5, integrate_func:Callable | None=None):
     final_alpha = torch.ones((points.shape[0]), dtype=torch.float32, device="cuda")
     if integrate_func is None:
         raise ValueError("integrate_func must be provided.")
@@ -28,7 +28,7 @@ def evaluate_cull_sdf_values(
     isosurface_value:Union[float, torch.Tensor]=0.5, 
     transform_sdf_to_linear_space:bool=False, 
     min_occupancy_value:float=1e-10,
-    integrate_func:Callable=None,
+    integrate_func:Callable | None=None,
 ):    
     if integrate_func is None:
         raise ValueError("integrate_func must be provided.")

@@ -2,22 +2,22 @@
 import numpy as np
 import torch
 from functools import partial
-from scene import Scene
+from milo.scene import Scene
 import os
 from os import makedirs
 import random
 from tqdm import tqdm
 from argparse import ArgumentParser
-from arguments import ModelParams, PipelineParams, get_combined_args
-from gaussian_renderer import GaussianModel, render_simp
+from milo.arguments import ModelParams, PipelineParams, get_combined_args
+from milo.gaussian_renderer import GaussianModel, render_simp
 import numpy as np
 import trimesh
 from tetranerf.utils.extension import cpp
-from scene.mesh import Meshes
-from utils.tetmesh import marching_tetrahedra
-from regularization.sdf.integration import evaluate_cull_sdf_values as compute_sdf_with_integration
-from regularization.sdf.depth_fusion import evaluate_sdf_values as compute_sdf_with_depth_fusion
-from regularization.sdf.depth_fusion import evaluate_mesh_colors_all_vertices
+from milo.scene.mesh import Meshes
+from milo.utils.tetmesh import marching_tetrahedra
+from milo.regularization.sdf.integration import evaluate_cull_sdf_values as compute_sdf_with_integration
+from milo.regularization.sdf.depth_fusion import evaluate_sdf_values as compute_sdf_with_depth_fusion
+from milo.regularization.sdf.depth_fusion import evaluate_mesh_colors_all_vertices
 import time
 
 
@@ -201,7 +201,8 @@ def extract_mesh(
             trunc_margin=trunc_margin,
         )
 
-if __name__ == "__main__":
+def main():
+    global args, render, integrate
     # Set up command line argument parser
     parser = ArgumentParser(description="Testing script parameters")
     model = ModelParams(parser, sentinel=True)
@@ -233,11 +234,11 @@ if __name__ == "__main__":
     
     print(f"[ INFO ] Using rasterizer: {args.rasterizer}")
     if args.rasterizer == "radegs":
-        from gaussian_renderer.radegs import render_radegs as render
-        from gaussian_renderer.radegs import integrate_radegs as integrate
+        from milo.gaussian_renderer.radegs import render_radegs as render
+        from milo.gaussian_renderer.radegs import integrate_radegs as integrate
     elif args.rasterizer == "gof":
-        from gaussian_renderer.gof import render_gof as render
-        from gaussian_renderer.gof import integrate_gof as integrate
+        from milo.gaussian_renderer.gof import render_gof as render
+        from milo.gaussian_renderer.gof import integrate_gof as integrate
     else:
         raise ValueError(f"Invalid rasterizer: {args.rasterizer}")
         
@@ -272,3 +273,7 @@ if __name__ == "__main__":
         trunc_margin=args.trunc_margin,
     )
     
+
+
+if __name__ == "__main__":
+    main()

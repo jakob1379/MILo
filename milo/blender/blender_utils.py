@@ -65,9 +65,9 @@ def find_affine_transform(
 
 def transform_points(
     X:torch.Tensor,
-    L:torch.Tensor=None,
-    T:torch.Tensor=None,
-    M:torch.Tensor=None
+    L:torch.Tensor | None=None,
+    T:torch.Tensor | None=None,
+    M:torch.Tensor | None=None
 ) -> torch.Tensor:
     """Transforms points X by the affine transform (L, T).
     A matrix M with shape (..., d+1, d+1) can also be provided, 

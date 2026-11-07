@@ -10,17 +10,17 @@
 #
 
 import torch
-from scene import Scene
+from milo.scene import Scene
 import os
-from gaussian_renderer import render_radegs, render_gof
+from milo.gaussian_renderer import render_radegs, render_gof
 from argparse import ArgumentParser
-from arguments import ModelParams, PipelineParams, get_combined_args
-from gaussian_renderer import GaussianModel
-from utils.regular_tsdf_utils import GaussianExtractor, post_process_mesh
+from milo.arguments import ModelParams, PipelineParams, get_combined_args
+from milo.gaussian_renderer import GaussianModel
+from milo.utils.regular_tsdf_utils import GaussianExtractor, post_process_mesh
 
 import open3d as o3d
 
-if __name__ == "__main__":
+def main():
     # Set up command line argument parser
     parser = ArgumentParser(description="Testing script parameters")
     model = ModelParams(parser, sentinel=True)
@@ -93,3 +93,7 @@ if __name__ == "__main__":
     print("\nmesh post processed saved at {}".format(post_mesh_path))
     print(f"Number of vertices: {len(mesh_post.vertices)}")
     print(f"Number of faces: {len(mesh_post.triangles)}")
+
+
+if __name__ == "__main__":
+    main()

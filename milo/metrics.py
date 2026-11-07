@@ -14,11 +14,11 @@ import os
 from PIL import Image
 import torch
 import torchvision.transforms.functional as tf
-from utils.loss_utils import ssim
-from lpipsPyTorch import lpips
+from milo.utils.loss_utils import ssim
+from milo.lpipsPyTorch import lpips
 import json
 from tqdm import tqdm
-from utils.image_utils import psnr
+from milo.utils.image_utils import psnr
 from argparse import ArgumentParser
 
 def readImages(renders_dir, gt_dir):
@@ -95,7 +95,7 @@ def evaluate(model_paths):
         # except:
         #     print("Unable to compute metrics for model", scene_dir)
 
-if __name__ == "__main__":
+def main():
     device = torch.device("cuda:0")
     torch.cuda.set_device(device)
 
@@ -104,3 +104,7 @@ if __name__ == "__main__":
     parser.add_argument('--model_paths', '-m', required=True, nargs="+", type=str, default=[])
     args = parser.parse_args()
     evaluate(args.model_paths)
+
+
+if __name__ == "__main__":
+    main()

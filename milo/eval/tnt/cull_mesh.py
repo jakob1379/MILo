@@ -10,7 +10,7 @@ import pyrender
 import copy
 from copy import deepcopy
 import torch.nn.functional as F
-from help_func import auto_orient_and_center_poses
+from milo.eval.tnt.help_func import auto_orient_and_center_poses
 import cv2
 
 
@@ -189,7 +189,7 @@ class Mesher(object):
         components = mesh.split(only_watertight=False)
         print("split completed")
         if get_largest_components:
-            areas = np.array([c.area for c in components], dtype=np.float)
+            areas = np.array([c.area for c in components], dtype=np.float64)
             mesh = components[areas.argmax()]
         else:
             new_components = []

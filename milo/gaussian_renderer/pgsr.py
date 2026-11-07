@@ -1,10 +1,10 @@
 import math
 import torch
-from scene.gaussian_model import GaussianModel
+from milo.scene.gaussian_model import GaussianModel
 from diff_plane_rasterization import GaussianRasterizationSettings as PlaneGaussianRasterizationSettings
 from diff_plane_rasterization import GaussianRasterizer as PlaneGaussianRasterizer
-from utils.sh_utils import eval_sh
-from utils.general_utils import build_rotation
+from milo.utils.sh_utils import eval_sh
+from milo.utils.general_utils import build_rotation
 
 
 def ndc_2_cam(ndc_xyz, intrinsic, W, H):

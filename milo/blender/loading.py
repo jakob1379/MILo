@@ -2,13 +2,13 @@ import json
 import numpy as np
 import torch
 import open3d as o3d
-from scene.gaussian_model import GaussianModel
-from scene.cameras import Camera
-from scene.mesh import Meshes
-from utils.camera_utils import get_cameras_spatial_extent
-from utils.graphics_utils import focal2fov, fov2focal
-from blender.editing import bind_gaussians_to_mesh
-from blender.blender_utils import transform_points
+from milo.scene.gaussian_model import GaussianModel
+from milo.scene.cameras import Camera
+from milo.scene.mesh import Meshes
+from milo.utils.camera_utils import get_cameras_spatial_extent
+from milo.utils.graphics_utils import focal2fov, fov2focal
+from milo.blender.editing import bind_gaussians_to_mesh
+from milo.blender.blender_utils import transform_points
 
 
 # Please change this function if you use a GaussianModel class 

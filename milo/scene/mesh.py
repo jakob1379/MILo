@@ -1,8 +1,8 @@
 from typing import List, Union, Tuple, Optional
 import torch
 import nvdiffrast.torch as dr
-from scene.cameras import Camera
-from utils.geometry_utils import transform_points_world_to_view
+from milo.scene.cameras import Camera
+from milo.utils.geometry_utils import transform_points_world_to_view
 
 
 def nvdiff_rasterization(
@@ -53,7 +53,7 @@ class Meshes(torch.nn.Module):
         self, 
         verts:torch.Tensor, 
         faces:torch.Tensor, 
-        verts_colors:torch.Tensor=None
+        verts_colors:torch.Tensor | None=None
     ):
         super().__init__()
         assert verts_colors is None or verts_colors.shape[0] == verts.shape[0]
@@ -167,8 +167,8 @@ class MeshRasterizer(torch.nn.Module):
     """
     def __init__(
         self, 
-        cameras:Union[List[Camera], Camera]=None,
-        raster_settings:RasterizationSettings=None,
+        cameras:Union[List[Camera], Camera] | None=None,
+        raster_settings:RasterizationSettings | None=None,
         use_opengl=True,
     ):
         super().__init__()
@@ -198,7 +198,7 @@ class MeshRasterizer(torch.nn.Module):
     def forward(
         self, 
         mesh:Meshes, 
-        cameras:List[Camera]=None,
+        cameras:List[Camera] | None=None,
         cam_idx:int=0,
         return_only_pix_to_face:bool=False,
         return_rast_out:bool=False,
@@ -262,7 +262,7 @@ class MeshRenderer(torch.nn.Module):
     def forward(
         self, 
         mesh:Meshes, 
-        cameras:Union[List[Camera], Camera]=None, 
+        cameras:Union[List[Camera], Camera] | None=None, 
         cam_idx=0,
         return_depth=False,
         return_normals=False,
@@ -380,7 +380,7 @@ class ScalableMeshRenderer(torch.nn.Module):
     def forward(
         self, 
         mesh:Meshes, 
-        cameras:Union[List[Camera], Camera]=None, 
+        cameras:Union[List[Camera], Camera] | None=None, 
         cam_idx:int=0,
         return_depth:bool=False,
         return_normals:bool=False,

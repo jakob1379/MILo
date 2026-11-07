@@ -7,22 +7,21 @@ from random import randint
 from tqdm import tqdm
 
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from mesh_nvs_utils import RenderWithColorField, get_mesh_from_ply
+from milo.eval.mesh_nvs.mesh_nvs_utils import RenderWithColorField, get_mesh_from_ply
 
-from gaussian_renderer import GaussianModel
+from milo.gaussian_renderer import GaussianModel
 
 from argparse import ArgumentParser
-from arguments import ModelParams, PipelineParams, get_combined_args
+from milo.arguments import ModelParams, PipelineParams, get_combined_args
 
-from scene import Scene
-from scene.mesh import MeshRasterizer
-from scene.mesh import ScalableMeshRenderer as MeshRenderer
-from scene.dataset_readers import sceneLoadTypeCallbacks
+from milo.scene import Scene
+from milo.scene.mesh import MeshRasterizer
+from milo.scene.mesh import ScalableMeshRenderer as MeshRenderer
+from milo.scene.dataset_readers import sceneLoadTypeCallbacks
 
-from utils.general_utils import safe_state
-from utils.camera_utils import cameraList_from_camInfos, camera_to_JSON
+from milo.utils.general_utils import safe_state
+from milo.utils.camera_utils import cameraList_from_camInfos, camera_to_JSON
 
 def train_color_field(
     ply_file: str,
